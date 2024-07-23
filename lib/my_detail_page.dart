@@ -28,7 +28,7 @@ class _DetailPageState extends State<DetailPage> {
           child: Stack(
             children: [
               Positioned(top:50, left:10,child: IconButton(
-                onPressed: ()=>null, icon: Icon(Icons.arrow_back_ios),
+                onPressed: ()=>Get.back(), icon: Icon(Icons.arrow_back_ios),
               )),
               Positioned(
                 top: 120,

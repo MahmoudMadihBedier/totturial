@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'my_detail_page.dart';
@@ -13,6 +14,26 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
+  List list=[];
+  List info=[];
+  _readData() async {
+    await DefaultAssetBundle.of(context).loadString("json/recent.json").then((value) {
+      setState(() {
+        list = json.decode(value);
+      });
+    });
+    await DefaultAssetBundle.of(context).loadString("json/detail.json").then((value) {
+      setState(() {
+        info = json.decode(value);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _readData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +63,7 @@ class _ContentPageState extends State<ContentPage> {
                       CircleAvatar(
                         radius:40,
                         backgroundImage: AssetImage(
-                            "img/background.jpg"
+                            "assets/img/background.jpg"
                         ),
                       ),
                       SizedBox(width: 10,),
@@ -101,7 +122,7 @@ class _ContentPageState extends State<ContentPage> {
                       "Popular Contest",
                       style: TextStyle(
                           color:Color(0xFF1f2326),
-                          fontSize: 20,
+                          fontSize: 18,
                           decoration: TextDecoration.none
                       ),
                     ),
@@ -110,7 +131,7 @@ class _ContentPageState extends State<ContentPage> {
                       "Show all",
                       style: TextStyle(
                           color:Color(0xFFcfd5b3),
-                          fontSize: 15,
+                          fontSize: 12,
                           decoration: TextDecoration.none
                       ),
                     ),
@@ -133,12 +154,18 @@ class _ContentPageState extends State<ContentPage> {
               SizedBox(height: 20,),
               //list
               Container(
-                height: 220,
+                height: 250,
                 child: PageView.builder(
                     controller: PageController(viewportFraction: 0.88),
-                    itemCount: 4,
+                    itemCount: info.length,
                     itemBuilder: (_, i){
                       return GestureDetector(
+                        onTap:(){
+                          Get.toNamed("/detail",arguments: {
+                            "title":info[i]["title"],
+                            "text":info[i]["text"],
+                          });
+                        } ,
 
 
                         child: Container(
@@ -156,7 +183,7 @@ class _ContentPageState extends State<ContentPage> {
                                   child:Row(
                                     children: [
                                       Text(
-                                        "Title",
+                                        info[i]["title"],
                                         style: TextStyle(
                                             fontSize: 30,
                                             fontWeight: FontWeight.w500,
@@ -171,9 +198,9 @@ class _ContentPageState extends State<ContentPage> {
                               Container(
                                 width: width,
                                 child: Text(
-                                  "Text",
+                                  info[i]["text"],
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color:Color(0xFFb8eefc)
                                   ),
                                 ),
@@ -192,7 +219,7 @@ class _ContentPageState extends State<ContentPage> {
                                             borderRadius: BorderRadius.circular(25),
                                             image: DecorationImage(
                                                 image: AssetImage(
-                                                    "img/background.jpg"
+                                                  info[i]["img"],
                                                 ),
                                                 fit: BoxFit.cover
                                             )
